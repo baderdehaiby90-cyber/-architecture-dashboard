@@ -154,14 +154,14 @@
     </div>
 
     <script>
-        // Time allocation data (hours per week)
+        // Time allocation data (hours per week - only what's scheduled)
         const ctx = document.getElementById('timeChart').getContext('2d');
         const timeChart = new Chart(ctx, {
             type: 'doughnut',
             data: {
-                labels: ['Work (Woolworths)', 'University', 'Personal Projects', 'Sleep', 'Other'],
+                labels: ['Work (Woolworths)', '3D Printing', 'Granny Flat', 'Subaru BRZ Mods', 'Vinyl Collection'],
                 datasets: [{
-                    data: [21, 24, 15, 56, 52],
+                    data: [21, 8, 5, 4, 3],
                     backgroundColor: [
                         '#FF6B6B',
                         '#4ECDC4',
