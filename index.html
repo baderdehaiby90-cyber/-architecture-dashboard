@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Architecture + Studies Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { 
@@ -46,6 +47,7 @@
         table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
         th { text-align: left; padding: 1rem; color: #00d4ff; font-weight: 600; border-bottom: 2px solid rgba(255, 255, 255, 0.1); }
         td { padding: 1rem; border-bottom: 1px solid rgba(255, 255, 255, 0.05); color: #e0e0e0; }
+        .chart-container { position: relative; width: 100%; max-width: 500px; margin: 0 auto; }
     </style>
 </head>
 <body>
@@ -75,7 +77,11 @@
         </div>
 
         <div class="section">
-            <h2 class="section-title">📅 WORK SCHEDULE</h2>
+            <h2 class="section-title">⏱️ TIME ALLOCATION</h2>
+            <div class="chart-container">
+                <canvas id="timeChart"></canvas>
+            </div>
+        </div>
             <table>
                 <thead>
                     <tr>
@@ -146,5 +152,42 @@
             </table>
         </div>
     </div>
+
+    <script>
+        // Time allocation data (hours per week)
+        const ctx = document.getElementById('timeChart').getContext('2d');
+        const timeChart = new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Work (Woolworths)', 'University', 'Personal Projects', 'Sleep', 'Other'],
+                datasets: [{
+                    data: [21, 24, 15, 56, 52],
+                    backgroundColor: [
+                        '#FF6B6B',
+                        '#4ECDC4',
+                        '#45B7D1',
+                        '#96CEB4',
+                        '#FFEAA7'
+                    ],
+                    borderColor: '#1a1a2e',
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            color: '#e0e0e0',
+                            font: { size: 13 },
+                            padding: 15
+                        }
+                    }
+                }
+            }
+        });
+    </script>
 </body>
 </html>
