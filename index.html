@@ -128,20 +128,19 @@
         // Register the datalabels plugin
         Chart.register(ChartDataLabels);
 
-        // Time allocation data (hours per week)
+        // Work hours breakdown by day
         const ctx = document.getElementById('timeChart').getContext('2d');
         const timeChart = new Chart(ctx, {
             type: 'doughnut',
             data: {
-                labels: ['Work (Woolworths)', '3D Printing', 'Granny Flat', 'Subaru BRZ Mods', 'Vinyl Collection'],
+                labels: ['Tuesday', 'Wednesday', 'Saturday', 'Sunday'],
                 datasets: [{
-                    data: [21, 8, 5, 4, 2],
+                    data: [3, 5, 5, 8],
                     backgroundColor: [
                         '#FF6B6B',
                         '#4ECDC4',
                         '#45B7D1',
-                        '#96CEB4',
-                        '#FFEAA7'
+                        '#96CEB4'
                     ],
                     borderColor: '#1a1a2e',
                     borderWidth: 2
