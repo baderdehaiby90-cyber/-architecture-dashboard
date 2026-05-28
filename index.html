@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Architecture + Studies Dashboard</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { 
@@ -63,8 +64,8 @@
                 <div class="metric-value" id="deadlineCount">0</div>
             </div>
             <div class="metric-card">
-                <div class="metric-label">Work Hours This Week</div>
-                <div class="metric-value" id="totalHours">21h</div>
+                <div class="metric-label">Total Weekly Hours</div>
+                <div class="metric-value" id="totalHours">40h</div>
             </div>
             <div class="metric-card">
                 <div class="metric-label">Active Projects</div>
@@ -103,37 +104,7 @@
             </table>
         </div>
 
-        <div class="section">
-            <h2 class="section-title">🎨 ACTIVE PROJECTS</h2>
-            <div class="grid">
-                <div class="card">
-                    <div class="card-title">Granny Flat Build</div>
-                    <div class="card-meta">Planning Phase • Flood overlay assessment</div>
-                    <div class="progress-bar"><div class="progress-fill" style="width: 15%"></div></div>
-                    <div class="progress-text">15% complete</div>
-                </div>
-                <div class="card">
-                    <div class="card-title">3D Printing Setup</div>
-                    <div class="card-meta">Troubleshooting • G-code optimization</div>
-                    <div class="progress-bar"><div class="progress-fill" style="width: 60%"></div></div>
-                    <div class="progress-text">60% complete</div>
-                </div>
-                <div class="card">
-                    <div class="card-title">Subaru BRZ Mods</div>
-                    <div class="card-meta">Research Phase • Wheels, suspension</div>
-                    <div class="progress-bar"><div class="progress-fill" style="width: 25%"></div></div>
-                    <div class="progress-text">25% complete</div>
-                </div>
-                <div class="card">
-                    <div class="card-title">Vinyl Collection</div>
-                    <div class="card-meta">Ongoing • Audio setup finalization</div>
-                    <div class="progress-bar"><div class="progress-fill" style="width: 40%"></div></div>
-                    <div class="progress-text">40% complete</div>
-                </div>
-            </div>
-        </div>
-
-        <div class="section">
+<div class="section">
             <h2 class="section-title">📚 SUBJECTS</h2>
             <table>
                 <thead>
@@ -154,14 +125,17 @@
     </div>
 
     <script>
-        // Time allocation data (hours per week - only what's scheduled)
+        // Register the datalabels plugin
+        Chart.register(ChartDataLabels);
+
+        // Time allocation data (hours per week)
         const ctx = document.getElementById('timeChart').getContext('2d');
         const timeChart = new Chart(ctx, {
             type: 'doughnut',
             data: {
                 labels: ['Work (Woolworths)', '3D Printing', 'Granny Flat', 'Subaru BRZ Mods', 'Vinyl Collection'],
                 datasets: [{
-                    data: [21, 8, 5, 4, 3],
+                    data: [21, 8, 5, 4, 2],
                     backgroundColor: [
                         '#FF6B6B',
                         '#4ECDC4',
@@ -184,6 +158,19 @@
                             font: { size: 13 },
                             padding: 15
                         }
+                    },
+                    datalabels: {
+                        color: '#fff',
+                        font: {
+                            size: 14,
+                            weight: 'bold'
+                        },
+                        formatter: (value) => {
+                            return value + 'h';
+                        },
+                        anchor: 'end',
+                        align: 'end',
+                        offset: 10
                     }
                 }
             }
