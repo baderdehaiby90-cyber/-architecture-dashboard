@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Architecture + Studies Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto; 
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); 
+            color: #e0e0e0; 
+            min-height: 100vh; 
+            padding: 2rem; 
+        }
+        .container { max-width: 1400px; margin: 0 auto; }
+        .header { margin-bottom: 3rem; padding-bottom: 2rem; border-bottom: 2px solid rgba(255, 255, 255, 0.1); }
+        .header h1 { 
+            font-size: 2.5rem; 
+            font-weight: 700; 
+            background: linear-gradient(135deg, #00d4ff, #0099ff); 
+            -webkit-background-clip: text; 
+            -webkit-text-fill-color: transparent; 
+            background-clip: text; 
+        }
+        .metrics { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin-bottom: 3rem; }
+        .metric-card { background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 12px; padding: 1.5rem; }
+        .metric-label { font-size: 0.85rem; color: #888; margin-bottom: 0.5rem; text-transform: uppercase; }
+        .metric-value { 
+            font-size: 2.5rem; 
+            font-weight: 700; 
+            background: linear-gradient(135deg, #00d4ff, #0099ff); 
+            -webkit-background-clip: text; 
+            -webkit-text-fill-color: transparent; 
+            background-clip: text; 
+        }
+        .section { background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 16px; padding: 2rem; margin-bottom: 3rem; }
+        .section-title { font-size: 1.3rem; font-weight: 600; margin-bottom: 1.5rem; color: #fff; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; }
+        .card { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 10px; padding: 1.5rem; }
+        .card-title { color: #fff; font-weight: 600; margin-bottom: 0.5rem; }
+        .card-meta { font-size: 0.85rem; color: #888; margin-bottom: 1rem; line-height: 1.5; }
+        .progress-bar { height: 8px; background: rgba(255, 255, 255, 0.1); border-radius: 4px; overflow: hidden; margin-bottom: 0.5rem; }
+        .progress-fill { height: 100%; background: linear-gradient(90deg, #00d4ff, #0099ff); }
+        .progress-text { font-size: 0.8rem; color: #888; text-align: right; }
+        table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+        th { text-align: left; padding: 1rem; color: #00d4ff; font-weight: 600; border-bottom: 2px solid rgba(255, 255, 255, 0.1); }
+        td { padding: 1rem; border-bottom: 1px solid rgba(255, 255, 255, 0.05); color: #e0e0e0; }
+        .loading { text-align: center; padding: 2rem; color: #00d4ff; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🏗️ ARCHITECTURE + STUDIES</h1>
+            <p>Semester S2 2026 • Week of June 1-7</p>
+        </div>
+
+        <div class="metrics">
+            <div class="metric-card">
+                <div class="metric-label">Active Deadlines</div>
+                <div class="metric-value" id="deadlineCount">-</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-label">Work Hours This Week</div>
+                <div class="metric-value" id="totalHours">-</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-label">Active Projects</div>
+                <div class="metric-value" id="projectCount">-</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-label">Subjects</div>
+                <div class="metric-value" id="subjectCount">-</div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2 class="section-title">📅 WORK SCHEDULE</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Day</th>
+                        <th>Employer</th>
+                        <th>Time</th>
+                        <th>Hours</th>
+                    </tr>
+                </thead>
+                <tbody id="scheduleBody">
+                    <tr><td colspan="4" class="loading">Loading...</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="section">
+            <h2 class="section-title">🎯 DEADLINES</h2>
+            <div class="grid" id="deadlinesGrid">
+                <div class="loading">Loading deadlines...</div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2 class="section-title">🎨 ACTIVE PROJECTS</h2>
+            <div class="grid" id="projectsGrid">
+                <div class="loading">Loading projects...</div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2 class="section-title">📚 SUBJECTS</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Subject</th>
+                        <th>Tutor</th>
+                        <th>Schedule</th>
+                        <th>Credits</th>
+                    </tr>
+                </thead>
+                <tbody id="subjectsBody">
+                    <tr><td colspan="4" class="loading">Loading...</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        const SUPABASE_URL = 'https://gmaxxfljfugcmydezdga.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdtYXh4ZmxqZnVnY215ZGV6ZGdhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mjk4NzI4NTYsImV4cCI6MTc0NzY0ODg1Nn0.0drPKdJ1eN2S2Mm8vLHVLfAo1aA6eoHEkCRYCN6lAAk';
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        async function loadDashboard() {
+            try {
+                const [s, d, p, su] = await Promise.all([
+                    supabase.from('schedule').select('*'),
+                    supabase.from('deadlines').select('*'),
+                    supabase.from('projects').select('*'),
+                    supabase.from('subjects').select('*')
+                ]);
+                
+                if (s.data) {
+                    document.getElementById('scheduleBody').innerHTML = s.data.map(i => 
+                        `<tr><td>${i.day}</td><td>${i.employer || '-'}</td><td>${i.time || '-'}</td><td>${i.hours}h</td></tr>`
+                    ).join('');
+                }
+                
+                if (d.data) {
+                    document.getElementById('deadlinesGrid').innerHTML = d.data.map(i => 
+                        `<div class="card"><div class="card-title">${i.name}</div><div class="card-meta">${i.details}<br><strong>Due:</strong> ${i.due_date}</div></div>`
+                    ).join('');
+                }
+                
+                if (p.data) {
+                    document.getElementById('projectsGrid').innerHTML = p.data.map(i => 
+                        `<div class="card"><div class="card-title">${i.name}</div><div class="card-meta">${i.details}</div><div class="progress-bar"><div class="progress-fill" style="width: ${i.progress}%"></div></div><div class="progress-text">${i.progress}% complete</div></div>`
+                    ).join('');
+                }
+                
+                if (su.data) {
+                    document.getElementById('subjectsBody').innerHTML = su.data.map(i => 
+                        `<tr><td>${i.name}</td><td>${i.tutor}</td><td>${i.schedule}</td><td>${i.credits}</td></tr>`
+                    ).join('');
+                }
+                
+                document.getElementById('deadlineCount').textContent = d.data?.length || 0;
+                document.getElementById('projectCount').textContent = p.data?.length || 0;
+                document.getElementById('subjectCount').textContent = su.data?.length || 0;
+                document.getElementById('totalHours').textContent = (s.data?.reduce((t, i) => t + i.hours, 0) || 0) + 'h';
+            } catch (error) {
+                console.error('Error loading dashboard:', error);
+            }
+        }
+        
+        loadDashboard();
+        setInterval(loadDashboard, 5000);
+    </script>
+</body>
+</html>
