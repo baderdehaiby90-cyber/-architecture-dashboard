@@ -46,7 +46,6 @@
         table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
         th { text-align: left; padding: 1rem; color: #00d4ff; font-weight: 600; border-bottom: 2px solid rgba(255, 255, 255, 0.1); }
         td { padding: 1rem; border-bottom: 1px solid rgba(255, 255, 255, 0.05); color: #e0e0e0; }
-        .loading { text-align: center; padding: 2rem; color: #00d4ff; }
     </style>
 </head>
 <body>
@@ -59,19 +58,19 @@
         <div class="metrics">
             <div class="metric-card">
                 <div class="metric-label">Active Deadlines</div>
-                <div class="metric-value" id="deadlineCount">-</div>
+                <div class="metric-value" id="deadlineCount">3</div>
             </div>
             <div class="metric-card">
                 <div class="metric-label">Work Hours This Week</div>
-                <div class="metric-value" id="totalHours">-</div>
+                <div class="metric-value" id="totalHours">21h</div>
             </div>
             <div class="metric-card">
                 <div class="metric-label">Active Projects</div>
-                <div class="metric-value" id="projectCount">-</div>
+                <div class="metric-value" id="projectCount">4</div>
             </div>
             <div class="metric-card">
                 <div class="metric-label">Subjects</div>
-                <div class="metric-value" id="subjectCount">-</div>
+                <div class="metric-value" id="subjectCount">3</div>
             </div>
         </div>
 
@@ -86,23 +85,63 @@
                         <th>Hours</th>
                     </tr>
                 </thead>
-                <tbody id="scheduleBody">
-                    <tr><td colspan="4" class="loading">Loading...</td></tr>
+                <tbody>
+                    <tr><td>Monday 1</td><td>-</td><td>Off</td><td>0h</td></tr>
+                    <tr><td>Tuesday 2</td><td>Woolworths</td><td>7:30am - 10:30am</td><td>3h</td></tr>
+                    <tr><td>Wednesday 3</td><td>Woolworths</td><td>6:00am - 11:00am</td><td>5h</td></tr>
+                    <tr><td>Thursday 4</td><td>-</td><td>Off</td><td>0h</td></tr>
+                    <tr><td>Friday 5</td><td>-</td><td>Off</td><td>0h</td></tr>
+                    <tr><td>Saturday 6</td><td>Woolworths</td><td>7:30am - 12:30pm</td><td>5h</td></tr>
+                    <tr><td>Sunday 7</td><td>Woolworths</td><td>6:00am - 2:00pm</td><td>8h</td></tr>
                 </tbody>
             </table>
         </div>
 
         <div class="section">
             <h2 class="section-title">🎯 DEADLINES</h2>
-            <div class="grid" id="deadlinesGrid">
-                <div class="loading">Loading deadlines...</div>
+            <div class="grid">
+                <div class="card">
+                    <div class="card-title">Spatial Comms Assignment 2</div>
+                    <div class="card-meta">Design assignment • Janelle<br><strong>Due:</strong> 2026-06-02</div>
+                </div>
+                <div class="card">
+                    <div class="card-title">AT03 Project Proposal</div>
+                    <div class="card-meta">Major project • Umi<br><strong>Due:</strong> 2026-06-04</div>
+                </div>
+                <div class="card">
+                    <div class="card-title">Elective Quiz 1</div>
+                    <div class="card-meta">Quiz • Vanessa<br><strong>Due:</strong> 2026-06-09</div>
+                </div>
             </div>
         </div>
 
         <div class="section">
             <h2 class="section-title">🎨 ACTIVE PROJECTS</h2>
-            <div class="grid" id="projectsGrid">
-                <div class="loading">Loading projects...</div>
+            <div class="grid">
+                <div class="card">
+                    <div class="card-title">Granny Flat Build</div>
+                    <div class="card-meta">Planning Phase • Flood overlay assessment</div>
+                    <div class="progress-bar"><div class="progress-fill" style="width: 15%"></div></div>
+                    <div class="progress-text">15% complete</div>
+                </div>
+                <div class="card">
+                    <div class="card-title">3D Printing Setup</div>
+                    <div class="card-meta">Troubleshooting • G-code optimization</div>
+                    <div class="progress-bar"><div class="progress-fill" style="width: 60%"></div></div>
+                    <div class="progress-text">60% complete</div>
+                </div>
+                <div class="card">
+                    <div class="card-title">Subaru BRZ Mods</div>
+                    <div class="card-meta">Research Phase • Wheels, suspension</div>
+                    <div class="progress-bar"><div class="progress-fill" style="width: 25%"></div></div>
+                    <div class="progress-text">25% complete</div>
+                </div>
+                <div class="card">
+                    <div class="card-title">Vinyl Collection</div>
+                    <div class="card-meta">Ongoing • Audio setup finalization</div>
+                    <div class="progress-bar"><div class="progress-fill" style="width: 40%"></div></div>
+                    <div class="progress-text">40% complete</div>
+                </div>
             </div>
         </div>
 
@@ -117,87 +156,13 @@
                         <th>Credits</th>
                     </tr>
                 </thead>
-                <tbody id="subjectsBody">
-                    <tr><td colspan="4" class="loading">Loading...</td></tr>
+                <tbody>
+                    <tr><td>AT03 Studio</td><td>Umi</td><td>Mon & Thu 10-1pm</td><td>6</td></tr>
+                    <tr><td>Spatial Communications</td><td>Janelle</td><td>Tue 10-12pm</td><td>6</td></tr>
+                    <tr><td>Elective</td><td>Vanessa</td><td>Fri 2-4pm</td><td>6</td></tr>
                 </tbody>
             </table>
         </div>
     </div>
-
-    <script>
-        const API_URL = 'https://gmaxxfljfugcmydezdga.supabase.co/functions/v1/get-dashboard-data';
-
-        async function loadDashboard() {
-            try {
-                const response = await fetch(API_URL);
-                if (!response.ok) throw new Error('API Error');
-                
-                const data = await response.json();
-                
-                renderSchedule(data.schedule);
-                renderDeadlines(data.deadlines);
-                renderProjects(data.projects);
-                renderSubjects(data.subjects);
-                updateMetrics(data.schedule, data.deadlines, data.projects, data.subjects);
-            } catch (error) {
-                console.error('Error loading dashboard:', error);
-            }
-        }
-
-        function renderSchedule(items) {
-            if (!items || items.length === 0) {
-                document.getElementById('scheduleBody').innerHTML = '<tr><td colspan="4" class="loading">No items</td></tr>';
-                return;
-            }
-            const html = items.map(i => 
-                `<tr><td>${i.day}</td><td>${i.employer || '-'}</td><td>${i.time || '-'}</td><td>${i.hours}h</td></tr>`
-            ).join('');
-            document.getElementById('scheduleBody').innerHTML = html;
-        }
-
-        function renderDeadlines(items) {
-            if (!items || items.length === 0) {
-                document.getElementById('deadlinesGrid').innerHTML = '<div class="loading">No items</div>';
-                return;
-            }
-            const html = items.map(i => 
-                `<div class="card"><div class="card-title">${i.name}</div><div class="card-meta">${i.details}<br><strong>Due:</strong> ${i.due_date}</div></div>`
-            ).join('');
-            document.getElementById('deadlinesGrid').innerHTML = html;
-        }
-
-        function renderProjects(items) {
-            if (!items || items.length === 0) {
-                document.getElementById('projectsGrid').innerHTML = '<div class="loading">No items</div>';
-                return;
-            }
-            const html = items.map(i => 
-                `<div class="card"><div class="card-title">${i.name}</div><div class="card-meta">${i.details}</div><div class="progress-bar"><div class="progress-fill" style="width: ${i.progress}%"></div></div><div class="progress-text">${i.progress}% complete</div></div>`
-            ).join('');
-            document.getElementById('projectsGrid').innerHTML = html;
-        }
-
-        function renderSubjects(items) {
-            if (!items || items.length === 0) {
-                document.getElementById('subjectsBody').innerHTML = '<tr><td colspan="4" class="loading">No items</td></tr>';
-                return;
-            }
-            const html = items.map(i => 
-                `<tr><td>${i.name}</td><td>${i.tutor}</td><td>${i.schedule}</td><td>${i.credits}</td></tr>`
-            ).join('');
-            document.getElementById('subjectsBody').innerHTML = html;
-        }
-
-        function updateMetrics(schedule, deadlines, projects, subjects) {
-            document.getElementById('deadlineCount').textContent = (deadlines || []).length;
-            document.getElementById('projectCount').textContent = (projects || []).length;
-            document.getElementById('subjectCount').textContent = (subjects || []).length;
-            const hours = (schedule || []).reduce((t, i) => t + (i.hours || 0), 0);
-            document.getElementById('totalHours').textContent = hours + 'h';
-        }
-
-        loadDashboard();
-        setInterval(loadDashboard, 5000);
-    </script>
 </body>
 </html>
