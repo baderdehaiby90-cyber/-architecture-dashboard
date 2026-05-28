@@ -125,44 +125,20 @@
     </div>
 
     <script>
-        const SUPABASE_URL = 'https://gmaxxfljfugcmydezdga.supabase.co';
-        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdtYXh4ZmxqZnVnY215ZGV6ZGdhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mjk4NzI4NTYsImV4cCI6MTc0NzY0ODg1Nn0.0drPKdJ1eN2S2Mm8vLHVLfAo1aA6eoHEkCRYCN6lAAk';
-
-        async function fetchData(table) {
-            try {
-                const response = await fetch(
-                    `${SUPABASE_URL}/rest/v1/${table}?select=*`,
-                    {
-                        headers: {
-                            'apikey': SUPABASE_KEY
-                        }
-                    }
-                );
-                if (!response.ok) {
-                    console.error(`API Error for ${table}:`, response.status);
-                    return [];
-                }
-                return await response.json();
-            } catch (error) {
-                console.error(`Error fetching ${table}:`, error);
-                return [];
-            }
-        }
+        const API_URL = 'https://gmaxxfljfugcmydezdga.supabase.co/functions/v1/get-dashboard-data';
 
         async function loadDashboard() {
             try {
-                const [schedule, deadlines, projects, subjects] = await Promise.all([
-                    fetchData('schedule'),
-                    fetchData('deadlines'),
-                    fetchData('projects'),
-                    fetchData('subjects')
-                ]);
+                const response = await fetch(API_URL);
+                if (!response.ok) throw new Error('API Error');
                 
-                renderSchedule(schedule);
-                renderDeadlines(deadlines);
-                renderProjects(projects);
-                renderSubjects(subjects);
-                updateMetrics(schedule, deadlines, projects, subjects);
+                const data = await response.json();
+                
+                renderSchedule(data.schedule);
+                renderDeadlines(data.deadlines);
+                renderProjects(data.projects);
+                renderSubjects(data.subjects);
+                updateMetrics(data.schedule, data.deadlines, data.projects, data.subjects);
             } catch (error) {
                 console.error('Error loading dashboard:', error);
             }
