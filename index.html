@@ -6,83 +6,232 @@
     <title>Architecture + Studies Dashboard</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Sora:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        :root {
+            --primary: #0F172A;
+            --secondary: #1E293B;
+            --accent: #3B82F6;
+            --accent-warm: #F97316;
+            --accent-teal: #14B8A6;
+            --text-primary: #F1F5F9;
+            --text-secondary: #CBD5E1;
+            --text-tertiary: #94A3B8;
+            --border: rgba(148, 163, 184, 0.1);
+            --glow: rgba(59, 130, 246, 0.1);
+        }
+        
+        html { scroll-behavior: smooth; }
+        
         body { 
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto; 
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); 
-            color: #e0e0e0; 
-            min-height: 100vh; 
-            padding: 2rem; 
+            font-family: 'Sora', sans-serif;
+            background: linear-gradient(135deg, var(--primary) 0%, #0D1117 100%);
+            color: var(--text-primary);
+            min-height: 100vh;
+            padding: 2rem 1rem;
+            background-attachment: fixed;
         }
-        .container { max-width: 1400px; margin: 0 auto; }
-        .header { margin-bottom: 3rem; padding-bottom: 2rem; border-bottom: 2px solid rgba(255, 255, 255, 0.1); }
-        .header h1 { 
-            font-size: 2.5rem; 
-            font-weight: 700; 
-            background: linear-gradient(135deg, #00d4ff, #0099ff); 
-            -webkit-background-clip: text; 
-            -webkit-text-fill-color: transparent; 
-            background-clip: text; 
+        
+        .container { max-width: 1200px; margin: 0 auto; }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 4rem;
+            padding: 2rem 0;
+            border-bottom: 1px solid var(--border);
         }
-        .metrics { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin-bottom: 3rem; }
-        .metric-card { background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 12px; padding: 1.5rem; }
-        .metric-label { font-size: 0.85rem; color: #888; margin-bottom: 0.5rem; text-transform: uppercase; }
-        .metric-value { 
-            font-size: 2.5rem; 
-            font-weight: 700; 
-            background: linear-gradient(135deg, #00d4ff, #0099ff); 
-            -webkit-background-clip: text; 
-            -webkit-text-fill-color: transparent; 
-            background-clip: text; 
+        
+        .header h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            font-weight: 700;
+            background: linear-gradient(135deg, #3B82F6 0%, #14B8A6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+            letter-spacing: -1px;
         }
-        .section { background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 16px; padding: 2rem; margin-bottom: 3rem; }
-        .section-title { font-size: 1.3rem; font-weight: 600; margin-bottom: 1.5rem; color: #fff; }
-        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; }
-        .card { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 10px; padding: 1.5rem; }
-        .card-title { color: #fff; font-weight: 600; margin-bottom: 0.5rem; }
-        .card-meta { font-size: 0.85rem; color: #888; margin-bottom: 1rem; line-height: 1.5; }
-        .progress-bar { height: 8px; background: rgba(255, 255, 255, 0.1); border-radius: 4px; overflow: hidden; margin-bottom: 0.5rem; }
-        .progress-fill { height: 100%; background: linear-gradient(90deg, #00d4ff, #0099ff); }
-        .progress-text { font-size: 0.8rem; color: #888; text-align: right; }
-        table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
-        th { text-align: left; padding: 1rem; color: #00d4ff; font-weight: 600; border-bottom: 2px solid rgba(255, 255, 255, 0.1); }
-        td { padding: 1rem; border-bottom: 1px solid rgba(255, 255, 255, 0.05); color: #e0e0e0; }
-        .chart-container { position: relative; width: 100%; max-width: 500px; margin: 0 auto; }
+        
+        .header p {
+            color: var(--text-tertiary);
+            font-size: 0.95rem;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+        }
+        
+        .metrics {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 4rem;
+        }
+        
+        .metric-card {
+            background: linear-gradient(135deg, rgba(30, 41, 59, 0.6) 0%, rgba(15, 23, 42, 0.4) 100%);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 2rem 1.5rem;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .metric-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--accent), transparent);
+        }
+        
+        .metric-card:hover {
+            border-color: var(--accent);
+            box-shadow: 0 8px 32px rgba(59, 130, 246, 0.1);
+            transform: translateY(-2px);
+        }
+        
+        .metric-label {
+            font-size: 0.75rem;
+            color: var(--text-tertiary);
+            margin-bottom: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
+            font-weight: 600;
+        }
+        
+        .metric-value {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--accent) 0%, var(--accent-teal) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .section {
+            background: linear-gradient(135deg, rgba(30, 41, 59, 0.4) 0%, rgba(15, 23, 42, 0.2) 100%);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 2.5rem;
+            margin-bottom: 2.5rem;
+            backdrop-filter: blur(20px);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .section::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, var(--glow) 0%, transparent 70%);
+            pointer-events: none;
+        }
+        
+        .section-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 2rem;
+            color: var(--text-primary);
+            position: relative;
+            z-index: 1;
+        }
+        
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 480px;
+            margin: 0 auto;
+            z-index: 1;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+            position: relative;
+            z-index: 1;
+        }
+        
+        th {
+            text-align: left;
+            padding: 1.25rem 1rem;
+            color: var(--accent);
+            font-weight: 600;
+            font-size: 0.8rem;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        td {
+            padding: 1.25rem 1rem;
+            border-bottom: 1px solid var(--border);
+            color: var(--text-secondary);
+            transition: all 0.2s ease;
+        }
+        
+        tbody tr {
+            transition: all 0.2s ease;
+        }
+        
+        tbody tr:hover {
+            background: rgba(59, 130, 246, 0.05);
+        }
+        
+        tbody tr:hover td {
+            color: var(--text-primary);
+        }
+        
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .metrics {
+                grid-template-columns: 1fr;
+            }
+            
+            .section {
+                padding: 1.5rem;
+            }
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <h1>🏗️ ARCHITECTURE + STUDIES</h1>
-            <p>Semester S2 2026 • Week of June 1-7</p>
+            <h1>Architecture Studio</h1>
+            <p>S2 2026 • Personal Planning Dashboard</p>
         </div>
 
         <div class="metrics">
             <div class="metric-card">
-                <div class="metric-label">Active Deadlines</div>
-                <div class="metric-value" id="deadlineCount">0</div>
-            </div>
-            <div class="metric-card">
                 <div class="metric-label">Total Weekly Hours</div>
-                <div class="metric-value" id="totalHours">40h</div>
+                <div class="metric-value">21h</div>
             </div>
             <div class="metric-card">
-                <div class="metric-label">Active Projects</div>
-                <div class="metric-value" id="projectCount">4</div>
+                <div class="metric-label">Work Days</div>
+                <div class="metric-value">4</div>
             </div>
             <div class="metric-card">
-                <div class="metric-label">Subjects</div>
-                <div class="metric-value" id="subjectCount">3</div>
+                <div class="metric-label">Courses Active</div>
+                <div class="metric-value">3</div>
             </div>
         </div>
 
         <div class="section">
-            <h2 class="section-title">⏱️ TIME ALLOCATION</h2>
-            <div class="chart-container">
-                <canvas id="timeChart"></canvas>
-            </div>
-        </div>
+            <h2 class="section-title">Work Schedule</h2>
             <table>
                 <thead>
                     <tr>
@@ -93,42 +242,47 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr><td>Monday 1</td><td>-</td><td>Off</td><td>0h</td></tr>
-                    <tr><td>Tuesday 2</td><td>Woolworths</td><td>7:30am - 10:30am</td><td>3h</td></tr>
-                    <tr><td>Wednesday 3</td><td>Woolworths</td><td>6:00am - 11:00am</td><td>5h</td></tr>
-                    <tr><td>Thursday 4</td><td>-</td><td>Off</td><td>0h</td></tr>
-                    <tr><td>Friday 5</td><td>-</td><td>Off</td><td>0h</td></tr>
-                    <tr><td>Saturday 6</td><td>Woolworths</td><td>7:30am - 12:30pm</td><td>5h</td></tr>
-                    <tr><td>Sunday 7</td><td>Woolworths</td><td>6:00am - 2:00pm</td><td>8h</td></tr>
+                    <tr><td>Monday</td><td>—</td><td>Off</td><td>0h</td></tr>
+                    <tr><td>Tuesday</td><td>Woolworths</td><td>7:30am – 10:30am</td><td>3h</td></tr>
+                    <tr><td>Wednesday</td><td>Woolworths</td><td>6:00am – 11:00am</td><td>5h</td></tr>
+                    <tr><td>Thursday</td><td>—</td><td>Off</td><td>0h</td></tr>
+                    <tr><td>Friday</td><td>—</td><td>Off</td><td>0h</td></tr>
+                    <tr><td>Saturday</td><td>Woolworths</td><td>7:30am – 12:30pm</td><td>5h</td></tr>
+                    <tr><td>Sunday</td><td>Woolworths</td><td>6:00am – 2:00pm</td><td>8h</td></tr>
                 </tbody>
             </table>
         </div>
 
-<div class="section">
-            <h2 class="section-title">📚 SUBJECTS</h2>
+        <div class="section">
+            <h2 class="section-title">Weekly Hours Breakdown</h2>
+            <div class="chart-container">
+                <canvas id="timeChart"></canvas>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2 class="section-title">Current Studies</h2>
             <table>
                 <thead>
                     <tr>
-                        <th>Subject</th>
+                        <th>Course</th>
                         <th>Code</th>
                         <th>Credits</th>
-                        <th>Start Date</th>
+                        <th>Start</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr><td>Introduction to Construction and Structural Synthesis</td><td>11206</td><td>6.0</td><td>27 Aug 2026</td></tr>
-                    <tr><td>Architectural History and Theory: Modernity and Modernism</td><td>11216</td><td>6.0</td><td>27 Aug 2026</td></tr>
-                    <tr><td>Architectural Studio 2</td><td>11274</td><td>12.0</td><td>27 Aug 2026</td></tr>
+                    <tr><td>Introduction to Construction and Structural Synthesis</td><td>11206</td><td>6.0</td><td>27 Aug</td></tr>
+                    <tr><td>Architectural History and Theory: Modernity and Modernism</td><td>11216</td><td>6.0</td><td>27 Aug</td></tr>
+                    <tr><td>Architectural Studio 2</td><td>11274</td><td>12.0</td><td>27 Aug</td></tr>
                 </tbody>
             </table>
         </div>
     </div>
 
     <script>
-        // Register the datalabels plugin
         Chart.register(ChartDataLabels);
 
-        // Work hours breakdown by day
         const ctx = document.getElementById('timeChart').getContext('2d');
         const timeChart = new Chart(ctx, {
             type: 'doughnut',
@@ -137,13 +291,14 @@
                 datasets: [{
                     data: [3, 5, 5, 8],
                     backgroundColor: [
-                        '#FF6B6B',
-                        '#4ECDC4',
-                        '#45B7D1',
-                        '#96CEB4'
+                        '#3B82F6',
+                        '#14B8A6',
+                        '#F97316',
+                        '#8B5CF6'
                     ],
-                    borderColor: '#1a1a2e',
-                    borderWidth: 2
+                    borderColor: '#0F172A',
+                    borderWidth: 3,
+                    borderRadius: 8
                 }]
             },
             options: {
@@ -153,23 +308,26 @@
                     legend: {
                         position: 'bottom',
                         labels: {
-                            color: '#e0e0e0',
-                            font: { size: 13 },
-                            padding: 15
+                            color: '#CBD5E1',
+                            font: { size: 13, family: "'Sora', sans-serif" },
+                            padding: 20,
+                            usePointStyle: true,
+                            pointStyle: 'circle'
                         }
                     },
                     datalabels: {
-                        color: '#fff',
+                        color: '#F1F5F9',
                         font: {
-                            size: 14,
-                            weight: 'bold'
+                            size: 15,
+                            weight: 'bold',
+                            family: "'Playfair Display', serif"
                         },
                         formatter: (value) => {
                             return value + 'h';
                         },
                         anchor: 'end',
                         align: 'end',
-                        offset: 10
+                        offset: 12
                     }
                 }
             }
