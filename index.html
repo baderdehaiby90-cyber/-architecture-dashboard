@@ -284,17 +284,22 @@
         Chart.register(ChartDataLabels);
 
         const ctx = document.getElementById('timeChart').getContext('2d');
+        
+        // Total hours in a week = 168
+        // Work hours = 21
+        // Free time = 147
+        const workHours = 21;
+        const freeHours = 168 - workHours;
+        
         const timeChart = new Chart(ctx, {
             type: 'doughnut',
             data: {
-                labels: ['Tuesday', 'Wednesday', 'Saturday', 'Sunday'],
+                labels: ['Work', 'Free Time'],
                 datasets: [{
-                    data: [3, 5, 5, 8],
+                    data: [workHours, freeHours],
                     backgroundColor: [
                         '#3B82F6',
-                        '#14B8A6',
-                        '#F97316',
-                        '#8B5CF6'
+                        'rgba(148, 163, 184, 0.15)'
                     ],
                     borderColor: '#0F172A',
                     borderWidth: 3,
@@ -304,6 +309,7 @@
             options: {
                 responsive: true,
                 maintainAspectRatio: true,
+                cutout: '65%',
                 plugins: {
                     legend: {
                         position: 'bottom',
@@ -318,16 +324,16 @@
                     datalabels: {
                         color: '#F1F5F9',
                         font: {
-                            size: 15,
+                            size: 16,
                             weight: 'bold',
                             family: "'Playfair Display', serif"
                         },
                         formatter: (value) => {
                             return value + 'h';
                         },
-                        anchor: 'end',
-                        align: 'end',
-                        offset: 12
+                        anchor: 'center',
+                        align: 'center',
+                        offset: 0
                     }
                 }
             }
